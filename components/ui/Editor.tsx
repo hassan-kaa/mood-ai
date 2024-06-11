@@ -5,7 +5,6 @@ import { deleteEntry, updateEntry } from "@/utils/api";
 //import { useAutosave } from "react-autosave";
 import { Button } from "./button";
 import { useRouter } from "next/navigation";
-import { calculateTextColor } from "@/utils/appearance";
 import { JournalEntry } from "@/utils/types";
 
 const Editor = ({ entry }: { entry: JournalEntry }) => {

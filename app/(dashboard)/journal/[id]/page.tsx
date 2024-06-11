@@ -4,7 +4,6 @@ import { getEntry } from "@/utils/api";
 import { JournalEntry } from "@/utils/types";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import { useEffect, useState } from "react";
-import { set } from "zod";
 
 const EntryPage = ({ params }: { params: Params }) => {
   const [entry, setEntry] = useState<JournalEntry>({} as JournalEntry);
@@ -17,7 +16,7 @@ const EntryPage = ({ params }: { params: Params }) => {
   };
   useEffect(() => {
     fetchEntry();
-  }, []);
+  });
   if (loading) return <div className="w-full h-full">Loading...</div>;
   return <div className="w-full h-full">{<Editor entry={entry} />}</div>;
 };

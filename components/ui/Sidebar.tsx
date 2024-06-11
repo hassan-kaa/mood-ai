@@ -47,8 +47,8 @@ const Sidebar = ({
         <FaRegLightbulb size={24} />
         {showMenu && <p>Notes</p>}
       </div>
-      {categories.map((category) => (
-        <TooltipProvider>
+      {categories.map((category, index) => (
+        <TooltipProvider key={index}>
           <Tooltip>
             <TooltipTrigger>
               <div

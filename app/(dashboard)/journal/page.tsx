@@ -37,7 +37,7 @@ const JournalPage = () => {
   useEffect(() => {
     adjustColumns(window.innerWidth);
     fetchEntries();
-  }, []);
+  });
 
   useEffect(() => {
     const handleResize = () => {
