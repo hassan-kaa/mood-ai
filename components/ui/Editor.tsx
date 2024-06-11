@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { deleteEntry, updateEntry } from "@/utils/api";
-import { useAutosave } from "react-autosave";
+//import { useAutosave } from "react-autosave";
 import { Button } from "./button";
-import { calculateTextColor } from "@/app/(dashboard)/journal/[id]/page";
-import { set } from "zod";
 import { useRouter } from "next/navigation";
+import { calculateTextColor } from "@/utils/appearance";
+import { JournalEntry } from "@/utils/types";
 
-const Editor = ({ entry }) => {
+const Editor = ({ entry }: { entry: JournalEntry }) => {
   const router = useRouter();
   const [value, setValue] = useState(entry.content);
   const [isLoading, setIsLoading] = useState(false);
@@ -39,13 +39,13 @@ const Editor = ({ entry }) => {
   }, [value]);
 
   return (
-    <div className="w-full h-full  grid grid-cols-3">
+    <div className="w-full h-full  grid lg:grid-cols-3 px-4">
       {isLoading && (
         <div className="w-full h-full bg-slate-400/50 z-1 absolute top-0 left-0 text-white flex items-center justify-center">
           Loading
         </div>
       )}
-      <div className="h-full py-10 col-span-2">
+      <div className="h-full py-10 lg:col-span-2">
         <div className="h-full flex-col flex gap-8">
           <textarea
             className="w-full h-full p-8 text-xl outline-none"
@@ -60,13 +60,13 @@ const Editor = ({ entry }) => {
         </div>
       </div>
 
-      <div className="border-l border-black">
+      <div className="lg:border-l border-black ">
         <div
           className=" px-6 py-10"
-          style={{
-            backgroundColor: currentEntry.analysis.color,
-            color: calculateTextColor(currentEntry.analysis.color),
-          }}
+          // style={{
+          //   backgroundColor: currentEntry.analysis.color,
+          //   color: calculateTextColor(currentEntry.analysis.color),
+          // }}
         >
           <h2 className="font-bold text-xl">Analysis</h2>
         </div>
@@ -74,18 +74,18 @@ const Editor = ({ entry }) => {
           <ul role="list" className="divide-y divide-gray-200">
             <li className="py-4 px-8 flex items-center justify-between">
               <div className="text-xl font-semibold w-1/3">Subject</div>
-              <div className="text-xl">{currentEntry.analysis.subject}</div>
+              <div className="text-xl">{currentEntry.analysis?.subject}</div>
             </li>
 
             <li className="py-4 px-8 flex items-center justify-between">
               <div className="text-xl font-semibold">Mood</div>
-              <div className="text-xl">{currentEntry.analysis.mood}</div>
+              <div className="text-xl">{currentEntry.analysis?.mood}</div>
             </li>
 
             <li className="py-4 px-8 flex items-center justify-between">
               <div className="text-xl font-semibold">Negative</div>
               <div className="text-xl">
-                {currentEntry.analysis.negative ? "True" : "False"}
+                {currentEntry.analysis?.negative ? "True" : "False"}
               </div>
             </li>
             <li className="py-4 px-8 flex items-center justify-between">

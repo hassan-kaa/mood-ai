@@ -1,19 +1,21 @@
-import { OpenAI } from "langchain/llms/openai";
-import { PromptTemplate } from "langchain/prompts";
-import { loadQARefineChain } from "langchain/chains";
-import { MemoryVectorStore } from "langchain/vectorstores/memory";
-import { OpenAIEmbeddings } from "langchain/embeddings/openai";
-
-import { StructuredOutputParser } from "langchain/output_parsers";
-import { Document } from "langchain/document";
+import { OpenAI } from "@langchain/openai";
+import { PromptTemplate } from "@langchain/core/prompts";
+import { StructuredOutputParser } from "@langchain/core/output_parsers";
+//import { Document } from "@langchain/core/documents";
 import z from "zod";
 
 const parser = StructuredOutputParser.fromZodSchema(
   z.object({
     mood: z
       .string()
-      .describe("the mood of the person who wrote the journal entry."),
-    summary: z.string().describe("quick summary of the entire entry."),
+      .describe(
+        "the mood of the person who wrote the journal entry in one word."
+      ),
+    summary: z
+      .string()
+      .describe(
+        "quick summary of the entire entry.should be short and concise"
+      ),
     subject: z.string().describe("the subject of the entry."),
     negative: z
       .boolean()
@@ -23,8 +25,15 @@ const parser = StructuredOutputParser.fromZodSchema(
     color: z
       .string()
       .describe(
-        "a hexadecimal color code representing the mood of the entry (i.e.  green and blue representing happiness, yellow and near white colors are for sort of neutral emotions . red and dark colors are for bad days , the colors should be gradually different relatively to how the strong the emotions are ) the color should be hexadecimal like this #fefefe."
+        "a hexadecimal color code representing the mood of the entry (i.e.  green and blue representing happiness, yellow and near white colors are for sort of neutral emotions . red and dark colors are for bad days , the colors should be gradually different relatively to how the strong the emotions are ) the color should be hexadecimal like this #fefefe. The colors should be various do not stick to same color codes"
       ),
+    intensity: z
+      .number()
+      .describe(
+        "on a scale of 0 to 10: the intensity of the mood in the entry."
+      )
+      .min(0)
+      .max(10),
   })
 );
 

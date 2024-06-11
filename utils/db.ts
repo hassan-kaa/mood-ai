@@ -12,3 +12,19 @@ export const prisma =
 if (process.env.NODE_ENV !== "production") {
   globbalForPrisma.prisma = prisma;
 }
+export const createUser = async (email: string) => {
+  const user = await prisma.user.create({
+    data: {
+      email: email,
+    },
+  });
+  return user;
+};
+export const getUser = async (email: string) => {
+  const user = await prisma.user.findUnique({
+    where: {
+      email: email,
+    },
+  });
+  return user;
+};

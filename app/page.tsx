@@ -1,27 +1,11 @@
-import { auth } from "@clerk/nextjs";
-import Link from "next/link";
+// import { getEntries } from "@/utils/api";
+// import { prisma } from "@/utils/db";
+import Hero from "@/components/ui/Hero";
 export default async function Home() {
-  const { userId } = await auth();
-  let href = userId ? "/journal" : "/new-user";
-
   return (
-    <div className="w-screen h-screen bg-black flex justify-center items-center text-white">
-      <div className="w-full max-w-[600px] mx-auto">
-        <h1 className="font-bold text-6xl mb-4">
-          The best Journal app , period.
-        </h1>
-        <p className="text-xl text-white/60 ">
-          This is the best app for tracking your mood through out your life .
-          All you have to do is be honest{" "}
-        </p>
-        <div className="my-4">
-          <Link href={href}>
-            <button className="rounded-xl px-4 py-2 bg-blue-500 text-xl">
-              Get started
-            </button>
-          </Link>
-        </div>
-      </div>
+    <div className="absolute inset-0 -z-20 h-full w-full items-center [background:radial-gradient(125%_125%_at_50%_10%,#000_40%,#63e_100%)]">
+      <div className="absolute -z-10 bottom-0 left-0 right-0 top-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px] opacity-60"></div>
+      <Hero />
     </div>
   );
 }

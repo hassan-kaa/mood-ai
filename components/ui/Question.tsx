@@ -1,19 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import { Button } from "./button";
 
 const Question = () => {
   const [value, setValue] = useState("");
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
   };
-  const handleSumbit = (e) => {
+  const handleSumbit = (e: FormEvent) => {
     e.preventDefault();
     console.log(value);
   };
   return (
-    <div className="w-1/3">
+    <div className="w-full lg:w-1/3">
       <form onSubmit={handleSumbit} className="w-full flex items-center">
         <input
           onChange={handleChange}
