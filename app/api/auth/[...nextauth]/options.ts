@@ -1,6 +1,16 @@
 import nextAuth, { AuthOptions, Session } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { createUser, getUser } from "@/utils/db";
+declare module "next-auth" {
+  interface Session {
+    user: {
+      id?: string;
+      email?: string | null;
+      name?: string | null;
+      image?: string | null;
+    };
+  }
+}
 export const options: AuthOptions = {
   providers: [
     GoogleProvider({
@@ -22,7 +32,6 @@ export const options: AuthOptions = {
       try {
         //check if the user already exists
         const userExists = await getUser(profile?.email as string);
-
         //if not connect to the database
         if (!userExists) {
           await createUser(profile?.email as string);

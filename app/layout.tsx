@@ -1,6 +1,7 @@
 import "./globals.css";
 import { Poppins } from "next/font/google";
 import Provider from "./contexts/AuthContext";
+import { Session } from "next-auth";
 const poppins = Poppins({
   weight: ["100", "300", "400", "500", "700"],
   subsets: ["latin"],
@@ -15,7 +16,7 @@ export default function RootLayout({
   session,
 }: {
   children: React.ReactNode;
-  session: any;
+  session: Session;
 }) {
   return (
     <html lang="en">

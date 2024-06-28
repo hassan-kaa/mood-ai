@@ -16,7 +16,7 @@ const EntryPage = ({ params }: { params: Params }) => {
   };
   useEffect(() => {
     fetchEntry();
-  });
+  }, []);
   if (loading) return <div className="w-full h-full">Loading...</div>;
   return <div className="w-full h-full">{<Editor entry={entry} />}</div>;
 };

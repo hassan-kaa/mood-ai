@@ -5,6 +5,7 @@ import { getEntries } from "@/utils/api";
 import { useEffect, useState } from "react";
 import { JournalEntry } from "@/utils/types";
 import Sidebar from "@/components/ui/Sidebar";
+import { set } from "zod";
 
 const JournalPage = () => {
   const [entries, setEntries] = useState<JournalEntry[]>([]);
@@ -14,6 +15,17 @@ const JournalPage = () => {
   const [otherEntries, setOtherEntries] = useState<JournalEntry[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [activeCategory, setActiveCategory] = useState<string>("Notes");
+
+  const onPinChange = (id: string, pinned: boolean) => {
+    setEntries((prev) =>
+      prev.map((entry) => (entry.id === id ? { ...entry, pinned } : entry))
+    );
+  };
+  const onArchiveChange = (id: string, archived: boolean) => {
+    setEntries((prev) =>
+      prev.map((entry) => (entry.id === id ? { ...entry, archived } : entry))
+    );
+  };
   const adjustColumns = (width: number) => {
     const num = width > 1280 ? 4 : width > 1024 ? 3 : width > 640 ? 2 : 1;
     const array: number[] = Array.from({ length: num }, (_, i) => i + 1);
@@ -22,7 +34,7 @@ const JournalPage = () => {
   const extractCategories = (entries: JournalEntry[]) => {
     const aux: string[] = [];
     entries.map((entry) => {
-      if (!aux.includes(entry.analysis.mood)) {
+      if (!aux.includes(entry.analysis.mood) && !entry.archived) {
         aux.push(entry.analysis.mood);
       }
     });
@@ -31,13 +43,12 @@ const JournalPage = () => {
   const fetchEntries = async () => {
     const data = await getEntries();
     setEntries(data);
-    setDisplayedEntries(data);
     extractCategories(data);
   };
   useEffect(() => {
     adjustColumns(window.innerWidth);
     fetchEntries();
-  });
+  }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -52,28 +63,28 @@ const JournalPage = () => {
     };
   }, []);
   useEffect(() => {
-    setPinnedEntries(
-      displayedEntries.filter((entry) => entry.pinned && !entry.archived)
-    );
-    setOtherEntries(
-      displayedEntries.filter((entry) => !entry.pinned && !entry.archived)
-    );
+    if (activeCategory === "Archive") {
+      setPinnedEntries(
+        displayedEntries.filter((entry) => entry.pinned && entry.archived)
+      );
+      setOtherEntries(
+        displayedEntries.filter((entry) => !entry.pinned && entry.archived)
+      );
+    } else {
+      setPinnedEntries(
+        displayedEntries.filter((entry) => entry.pinned && !entry.archived)
+      );
+      setOtherEntries(
+        displayedEntries.filter((entry) => !entry.pinned && !entry.archived)
+      );
+    }
   }, [displayedEntries]);
-  const onPinChange = (id: string, pinned: boolean) => {
-    setEntries((prev) =>
-      prev.map((entry) => (entry.id === id ? { ...entry, pinned } : entry))
-    );
-  };
-  const onArchiveChange = (id: string, archived: boolean) => {
-    setEntries((prev) =>
-      prev.map((entry) => (entry.id === id ? { ...entry, archived } : entry))
-    );
-  };
+
   useEffect(() => {
     if (activeCategory === "Notes") {
       setDisplayedEntries(entries);
     } else if (activeCategory === "Archive") {
-      setDisplayedEntries(entries.filter((entry) => entry.archived));
+      setDisplayedEntries(entries.filter((entry) => entry.archived == true));
     } else {
       setDisplayedEntries(
         entries.filter((entry) => entry.analysis.mood === activeCategory)
@@ -81,6 +92,9 @@ const JournalPage = () => {
     }
   }, [activeCategory]);
 
+  useEffect(() => {
+    setDisplayedEntries(entries);
+  }, [entries]);
   return (
     <div className="flex gap-1 w-full h-screen  overflow-hidden">
       <Sidebar
@@ -89,9 +103,11 @@ const JournalPage = () => {
         categories={categories}
       />
       <div className="lg:p-10 p-2 bg-slate-50 h-full overflow-y-scroll hide-scrollbar w-full ">
-        <div className="my-8 w-full flex justify-center items-center">
-          <NewEntryCard />
-        </div>
+        {activeCategory != "Archive" && (
+          <div className="my-8 w-full flex justify-center items-center">
+            <NewEntryCard />
+          </div>
+        )}
         {displayedEntries.length > 0 && (
           <div className="flex flex-col gap-2">
             {pinnedEntries.length > 0 && (

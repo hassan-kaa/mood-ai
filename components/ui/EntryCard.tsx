@@ -20,7 +20,7 @@ import { ArchiveIcon, PinIcon, PinOffIcon } from "lucide-react";
 import { archiveEntry, pinEntry } from "@/utils/api";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-
+import { HiOutlineArchiveBoxXMark } from "react-icons/hi2";
 const EntryCard = ({
   entry,
   onPinChange,
@@ -72,7 +72,7 @@ const EntryCard = ({
                       {journalEntry.archived == false ? (
                         <ArchiveIcon size={24} />
                       ) : (
-                        ""
+                        <HiOutlineArchiveBoxXMark size={24} />
                       )}
                     </div>
                   </TooltipTrigger>

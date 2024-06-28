@@ -24,12 +24,12 @@ const Sidebar = ({
   const [showMenu, setShowMenu] = useState(false);
   return (
     <div
-      className={`h-screen bg-slate-800 text-white flex flex-col p-1  ${
+      className={`h-screen bg-slate-800 text-white flex flex-col  ${
         showMenu ? "w-2/3 text-sm md:w-1/5 lg:w-1/6 md:text-lg  z-50 " : "w-16 "
       }  transition-all ease-in-out duration-200`}
     >
       <div
-        className="p-4 hover:bg-slate-100/10 rounded-full cursor-pointer w-max "
+        className="p-2 hover:bg-slate-100/10 rounded-full cursor-pointer w-max m-2 "
         onClick={() => {
           setShowMenu((prev) => !prev);
         }}
