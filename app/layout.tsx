@@ -2,7 +2,6 @@ import "./globals.css";
 import { Poppins } from "next/font/google";
 import Provider from "./contexts/AuthContext";
 import { Session, getServerSession } from "next-auth";
-import { ReactNode } from "react";
 import options from "./api/auth/[...nextauth]/options";
 
 const poppins = Poppins({
