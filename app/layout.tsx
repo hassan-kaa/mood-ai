@@ -4,6 +4,7 @@ import Provider from "./contexts/AuthContext";
 import { Session, getServerSession } from "next-auth";
 import options from "./api/auth/[...nextauth]/options";
 import { redirect } from "next/navigation";
+import { getSession } from "next-auth/react";
 
 const poppins = Poppins({
   weight: ["100", "300", "400", "500", "700"],
@@ -20,14 +21,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session: Session | null = await getServerSession(options);
-
-  if (!session) {
-    // Redirect to the login page if there's no session
-    redirect("/api/auth/signin");
-    return null; // Ensure no further rendering happens
-  }
-
+  const session: Session | null = await getSession(options);
   return (
     <html lang="en">
       <body className={poppins.className}>
