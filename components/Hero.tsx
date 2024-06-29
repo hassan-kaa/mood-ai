@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useRef } from "react";
 import { useEffect } from "react";
 import { annotate, annotationGroup } from "rough-notation";
-import { Button } from "./button";
+import { Button } from "./ui/button";
 
 const Hero = () => {
   const href = "/journal";

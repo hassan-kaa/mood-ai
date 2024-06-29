@@ -1,5 +1,5 @@
 "use client";
-import Editor from "@/components/ui/Editor";
+import Editor from "@/components/Editor";
 import { getEntry } from "@/utils/api";
 import { JournalEntry } from "@/utils/types";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";

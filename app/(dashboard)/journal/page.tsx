@@ -1,14 +1,15 @@
 "use client";
-import EntryCard from "@/components/ui/EntryCard";
-import NewEntryCard from "@/components/ui/NewEntryCard";
+import EntryCard from "@/components/EntryCard";
+import NewEntryCard from "@/components/NewEntryCard";
 import { getEntries } from "@/utils/api";
 import { useEffect, useState } from "react";
 import { JournalEntry } from "@/utils/types";
-import Sidebar from "@/components/ui/Sidebar";
-import { set } from "zod";
+import Sidebar from "@/components/Sidebar";
+import { SkeletonCard } from "@/components/SkeletonCard";
 
 const JournalPage = () => {
   const [entries, setEntries] = useState<JournalEntry[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const [displayedEntries, setDisplayedEntries] = useState<JournalEntry[]>([]);
   const [columns, setColumns] = useState<number[]>();
   const [pinnedEntries, setPinnedEntries] = useState<JournalEntry[]>([]);
@@ -41,9 +42,11 @@ const JournalPage = () => {
     setCategories(aux);
   };
   const fetchEntries = async () => {
+    setLoading(true);
     const data = await getEntries();
     setEntries(data);
     extractCategories(data);
+    setLoading(false);
   };
   useEffect(() => {
     adjustColumns(window.innerWidth);
@@ -106,6 +109,15 @@ const JournalPage = () => {
         {activeCategory != "Archive" && (
           <div className="my-8 w-full flex justify-center items-center">
             <NewEntryCard />
+          </div>
+        )}
+        {loading && (
+          <div className="flex flex-col gap-2">
+            <div className="grid xl:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2 gap-4 lg:gap-8">
+              {Array.from({ length: 10 }, (_, i) => (
+                <SkeletonCard key={i} />
+              ))}
+            </div>
           </div>
         )}
         {displayedEntries.length > 0 && (

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { deleteEntry, updateEntry } from "@/utils/api";
 //import { useAutosave } from "react-autosave";
-import { Button } from "./button";
+import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
 import { JournalEntry } from "@/utils/types";
 

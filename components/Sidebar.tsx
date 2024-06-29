@@ -11,7 +11,7 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "./tooltip";
+} from "./ui/tooltip";
 const Sidebar = ({
   categories,
   setActiveCategory,

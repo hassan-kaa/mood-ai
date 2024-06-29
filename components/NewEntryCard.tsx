@@ -2,9 +2,9 @@
 import { createNewEntry } from "@/utils/api";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { Button } from "./button";
+import { Button } from "./ui/button";
 //import { Caveat } from "next/font/google";
-import { Textarea } from "./textarea";
+import { Textarea } from "./ui/textarea";
 //const caveat = Caveat({ subsets: ["latin"] });
 const NewEntryCard = () => {
   const router = useRouter();

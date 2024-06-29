@@ -1,7 +1,7 @@
 "use client";
 
 import { ChangeEvent, FormEvent, useState } from "react";
-import { Button } from "./button";
+import { Button } from "./ui/button";
 
 const Question = () => {
   const [value, setValue] = useState("");
