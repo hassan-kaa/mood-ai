@@ -1,7 +1,7 @@
 import { User } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 const createURL = (path: string) => {
-  return "http://localhost:3000" + path;
+  return process.env.BASE_URL + path;
 };
 
 export const getEntries = async () => {

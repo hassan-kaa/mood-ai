@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { useEffect } from "react";
 import { annotate, annotationGroup } from "rough-notation";
 import { Button } from "./ui/button";
+import Image from "next/image";
 
 const Hero = () => {
   const href = "/journal";
@@ -57,6 +58,13 @@ const Hero = () => {
             </Button>
           </Link>
         </div>
+        <Image
+          src={"/Mood-ai.jpeg"}
+          alt="mood"
+          className="rounded-lg w-2/3"
+          width={"1100"}
+          height={"600"}
+        />
       </div>
 
       {/* <div className="z-100 absolute top-0 w-full h-full">
