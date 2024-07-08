@@ -34,11 +34,12 @@ const JournalPage = () => {
   };
   const extractCategories = (entries: JournalEntry[]) => {
     const aux: string[] = [];
-    entries.map((entry) => {
-      if (!aux.includes(entry.analysis.mood) && !entry.archived) {
-        aux.push(entry.analysis.mood);
-      }
-    });
+    entries &&
+      entries.map((entry) => {
+        if (!aux.includes(entry.analysis.mood) && !entry.archived) {
+          aux.push(entry.analysis.mood);
+        }
+      });
     setCategories(aux);
   };
   const fetchEntries = async () => {
@@ -51,9 +52,6 @@ const JournalPage = () => {
   useEffect(() => {
     adjustColumns(window.innerWidth);
     fetchEntries();
-  }, []);
-
-  useEffect(() => {
     const handleResize = () => {
       adjustColumns(window.innerWidth);
     };
@@ -65,21 +63,24 @@ const JournalPage = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
   useEffect(() => {
-    if (activeCategory === "Archive") {
-      setPinnedEntries(
-        displayedEntries.filter((entry) => entry.pinned && entry.archived)
-      );
-      setOtherEntries(
-        displayedEntries.filter((entry) => !entry.pinned && entry.archived)
-      );
-    } else {
-      setPinnedEntries(
-        displayedEntries.filter((entry) => entry.pinned && !entry.archived)
-      );
-      setOtherEntries(
-        displayedEntries.filter((entry) => !entry.pinned && !entry.archived)
-      );
+    if (displayedEntries) {
+      if (activeCategory === "Archive") {
+        setPinnedEntries(
+          displayedEntries.filter((entry) => entry.pinned && entry.archived)
+        );
+        setOtherEntries(
+          displayedEntries.filter((entry) => !entry.pinned && entry.archived)
+        );
+      } else {
+        setPinnedEntries(
+          displayedEntries.filter((entry) => entry.pinned && !entry.archived)
+        );
+        setOtherEntries(
+          displayedEntries.filter((entry) => !entry.pinned && !entry.archived)
+        );
+      }
     }
   }, [displayedEntries]);
 
@@ -120,9 +121,10 @@ const JournalPage = () => {
             </div>
           </div>
         )}
-        {displayedEntries.length > 0 && (
+        {!entries && <div className="w-full text-center">No Data Found !</div>}
+        {displayedEntries && (
           <div className="flex flex-col gap-2">
-            {pinnedEntries.length > 0 && (
+            {pinnedEntries && (
               <div className="flex-col flex gap-4 py-8">
                 <h1 className="text-xl font-bold">Pinned</h1>
                 <div className="grid xl:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2 gap-4 lg:gap-8">
@@ -145,10 +147,10 @@ const JournalPage = () => {
                 </div>
               </div>
             )}
-            {otherEntries.length > 0 && (
+            {otherEntries && (
               <div className="flex-col flex gap-4">
                 <h1 className="text-xl font-bold">
-                  {pinnedEntries.length > 0 && "Others"}
+                  {pinnedEntries && "Others"}
                 </h1>
                 <div className="grid xl:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2 gap-4 lg:gap-8">
                   {columns?.map((column, colIndex) => (
