@@ -7,8 +7,8 @@ import { options } from "../auth/[...nextauth]/options";
 
 export const GET = async (req: NextRequest) => {
   const session = await getServerSession(options);
-  console.log("session in GET", session);
-  if (!session) throw new Error("No session");
+  if (!session)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   try {
     const user = await getUser(session?.user?.email as string);
     const entries = await prisma.journalEntry.findMany({
@@ -22,15 +22,18 @@ export const GET = async (req: NextRequest) => {
     });
     return NextResponse.json({ data: entries });
   } catch (err) {
-    console.log("error in GET because of session");
+    return NextResponse.json(
+      { error: "Failed to fetch entries" },
+      { status: 500 }
+    );
   }
 };
 
 export const POST = async (req: NextRequest) => {
   const session = await getServerSession(options);
-  console.log("session in POST", session);
   const { content } = await req.json();
-  if (!session) throw new Error("No session");
+  if (!session)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   try {
     const user = await getUser(session?.user?.email as string);
     const journal = await prisma.journalEntry.create({
@@ -52,6 +55,9 @@ export const POST = async (req: NextRequest) => {
     revalidatePath("/journal");
     return NextResponse.json({ data: journal });
   } catch (err) {
-    console.log(err);
+    return NextResponse.json(
+      { error: "Failed to create entry" },
+      { status: 500 }
+    );
   }
 };

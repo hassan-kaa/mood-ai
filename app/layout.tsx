@@ -2,9 +2,7 @@ import "./globals.css";
 import { Poppins } from "next/font/google";
 import Provider from "./contexts/AuthContext";
 import { Session, getServerSession } from "next-auth";
-import options from "./api/auth/[...nextauth]/options";
-import { redirect } from "next/navigation";
-import { getSession } from "next-auth/react";
+import { options } from "./api/auth/[...nextauth]/options";
 
 const poppins = Poppins({
   weight: ["100", "300", "400", "500", "700"],
@@ -21,7 +19,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session: Session | null = await getSession(options);
+  const session: Session | null = await getServerSession(options);
   return (
     <html lang="en">
       <body className={poppins.className}>

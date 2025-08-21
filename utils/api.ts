@@ -1,104 +1,81 @@
-import { User } from "@prisma/client";
-import { revalidatePath } from "next/cache";
-const createURL = (path: string) => {
-  return process.env.NEXT_PUBLIC_BASE_URL + path;
-};
+type JSONValue = any;
 
-export const getEntries = async () => {
-  const res = await fetch(new Request(createURL("/api/journal")));
-  if (res.ok) {
-    const data = await res.json();
-    return data.data;
-  } else {
-    console.log("GetEntries Error fetching data");
-  }
-};
+const getBaseUrl = () => {
+  if (typeof window !== "undefined") return ""; // relative on browser
 
-export const getEntry = async (id: string) => {
-  const res = await fetch(new Request(createURL(`/api/journal/${id}`)));
-  if (res.ok) {
-    const data = await res.json();
-    return data.data;
-  } else {
-    console.log("GetEntry Error fetching data");
-  }
-};
-
-export const createNewEntry = async (content: string) => {
-  const res = await fetch(
-    new Request(createURL("/api/journal"), {
-      method: "POST",
-      body: JSON.stringify({ content }),
-    })
+  return (
+    process.env.NEXT_PUBLIC_BASE_URL ||
+    process.env.NEXTAUTH_URL ||
+    "http://localhost:3000"
   );
-  if (res.ok) {
-    const data = await res.json();
-    return data.data;
-  }
 };
 
-export const updateEntry = async (id: string, content: string) => {
-  const res = await fetch(
-    new Request(createURL(`/api/journal/${id}`), {
-      method: "PATCH",
-      body: JSON.stringify({ content }),
-    })
-  );
-  if (res.ok) {
-    const data = await res.json();
-    return data.data;
-  }
-  revalidatePath(`/api/journal/${id}`);
-};
-export const pinEntry = async (id: string, pinned: boolean) => {
-  const res = await fetch(
-    new Request(createURL(`/api/journal/${id}`), {
-      method: "PATCH",
-      body: JSON.stringify({ pinned }),
-    })
-  );
-  if (res.ok) {
-    const data = await res.json();
-    return data.data;
-  }
+async function apiFetch<T = JSONValue>(
+  path: string,
+  init: RequestInit = {}
+): Promise<T> {
+  const url = path.startsWith("http") ? path : `${getBaseUrl()}${path}`;
 
-  revalidatePath(`/api/journal`);
-};
-export const archiveEntry = async (id: string, archived: boolean) => {
-  const res = await fetch(
-    new Request(createURL(`/api/journal/${id}`), {
-      method: "PATCH",
-      body: JSON.stringify({ archived }),
-    })
-  );
-  if (res.ok) {
-    const data = await res.json();
-    return data.data;
-  }
-};
+  const res = await fetch(url, {
+    credentials: "include",
+    cache: "no-store",
+    headers: {
+      "Content-Type":
+        init.body && !(init.headers as any)?.["Content-Type"]
+          ? "application/json"
+          : undefined,
+      ...(init.headers as any),
+    },
+    ...init,
+  });
 
-export const deleteEntry = async (id: string) => {
-  const res = await fetch(
-    new Request(createURL(`/api/journal/${id}`), {
-      method: "DELETE",
-    })
-  );
-  if (res.ok) {
-    const data = await res.json();
-    return data.data;
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new Error(`API ${res.status} ${res.statusText} @ ${url}\n${text}`);
   }
-};
+  const json = (await res.json().catch(() => null)) as { data?: T } | T | null;
 
-export const register = async (user: User) => {
-  return await fetch(createURL("/api/auth/sign-up"), {
+  // @ts-ignore – prefer {data} but fall back
+  return (json && (json.data ?? json)) as T;
+}
+export const getEntries = () => apiFetch("/api/journal");
+export const getEntry = (id: string) => apiFetch(`/api/journal/${id}`);
+
+export const createNewEntry = (content: string) =>
+  apiFetch("/api/journal", {
+    method: "POST",
+    body: JSON.stringify({ content }),
+  });
+
+export const updateEntry = (id: string, content: string) =>
+  apiFetch(`/api/journal/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify({ content }),
+  });
+
+export const pinEntry = (id: string, pinned: boolean) =>
+  apiFetch(`/api/journal/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify({ pinned }),
+  });
+
+export const archiveEntry = (id: string, archived: boolean) =>
+  apiFetch(`/api/journal/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify({ archived }),
+  });
+
+export const deleteEntry = (id: string) =>
+  apiFetch(`/api/journal/${id}`, { method: "DELETE" });
+
+export const register = (user: { email: string; password?: string }) =>
+  apiFetch("/api/auth/sign-up", {
     method: "POST",
     body: JSON.stringify(user),
   });
-};
 
-export const login = async (user: User) => {
-  return await fetch(createURL("/api/auth/sign-in"), {
+export const login = (user: { email: string; password?: string }) =>
+  apiFetch("/api/auth/sign-in", {
     method: "POST",
     body: JSON.stringify(user),
   });
-};

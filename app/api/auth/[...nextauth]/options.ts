@@ -1,4 +1,4 @@
-import nextAuth, { AuthOptions, Session } from "next-auth";
+import { AuthOptions, Session } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { createUser, getUser } from "@/utils/db";
 declare module "next-auth" {
@@ -14,8 +14,8 @@ declare module "next-auth" {
 export const options: AuthOptions = {
   providers: [
     GoogleProvider({
-      clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID as string,
-      clientSecret: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET as string,
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
@@ -44,5 +44,3 @@ export const options: AuthOptions = {
     },
   },
 };
-
-export default nextAuth(options);
