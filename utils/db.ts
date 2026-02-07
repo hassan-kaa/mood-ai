@@ -1,21 +1,28 @@
 import { PrismaClient } from "@prisma/client";
 
-const globbalForPrisma = globalThis as unknown as {
+const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
 export const prisma =
-  globbalForPrisma.prisma ??
+  globalForPrisma.prisma ??
   new PrismaClient({
     log: ["query"],
   });
 if (process.env.NODE_ENV !== "production") {
-  globbalForPrisma.prisma = prisma;
+  globalForPrisma.prisma = prisma;
 }
-export const createUser = async (email: string) => {
+
+export const createUser = async (
+  email: string,
+  name?: string | null,
+  imageURL?: string | null
+) => {
   const user = await prisma.user.create({
     data: {
-      email: email,
+      email,
+      ...(name != null && { name }),
+      ...(imageURL != null && { imageURL }),
     },
   });
   return user;

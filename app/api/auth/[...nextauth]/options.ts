@@ -24,21 +24,25 @@ export const options: AuthOptions = {
   },
   callbacks: {
     async session({ session }: { session: Session }) {
-      const sessionUser = await getUser(session?.user?.email as string);
-      session.user.id = sessionUser?.id.toString();
+      const email = session?.user?.email;
+      if (!email) return session;
+      const sessionUser = await getUser(email);
+      session.user.id = sessionUser?.id ?? undefined;
       return session;
     },
-    async signIn({ profile }) {
+    async signIn({ user, profile }) {
+      const email = (user?.email ?? (profile as { email?: string })?.email) as string | undefined;
+      if (!email) return false;
       try {
-        //check if the user already exists
-        const userExists = await getUser(profile?.email as string);
-        //if not connect to the database
+        const userExists = await getUser(email);
         if (!userExists) {
-          await createUser(profile?.email as string);
+          const name = (user?.name ?? (profile as { name?: string })?.name) ?? null;
+          const image = (user?.image ?? (profile as { picture?: string })?.picture) ?? null;
+          await createUser(email, name, image);
         }
         return true;
       } catch (error) {
-        console.log(error);
+        console.error("signIn callback error:", error);
         return false;
       }
     },
